@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 <!-- three.js library -->
 <script src="https://threejs.org/build/three.js"></script>
 <script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
@@ -8,6 +8,7 @@
 <script>THREEx.ArToolkitContext.baseURL = 'https://jeromeetienne.github.io/AR.js/three.js/'</script>
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+  <!-- <img id="img" style="width:100vw; position:fixed; top:0; left:0; z-index:5; opacity:0.5"> -->
 <script>
   //////////////////////////////////////////////////////////////////////////////////
   //    Init
@@ -19,7 +20,7 @@
     alpha: true
   });
   renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-  renderer.setSize( 480, 480 );
+  renderer.setSize( 640, 640 );
   renderer.domElement.style.position = 'absolute'
   renderer.domElement.style.top = '0px'
   renderer.domElement.style.left = '0px'
@@ -47,11 +48,11 @@
     // to read from the webcam 
     sourceType : 'webcam',
     // resolution of at which we initialize in the source image
-    // sourceWidth: 480,
-    // sourceHeight: 480,
+    sourceWidth: 640,
+    sourceHeight: 640,
     // resolution displayed for the source 
-    // displayWidth: 480,
-    // displayHeight: 480,
+    displayWidth: 640,
+    displayHeight: 640,
     
     // // to read from an image
     // sourceType : 'image',
@@ -73,9 +74,9 @@
   })
   function onResize(){
     arToolkitSource.onResize()  
-    arToolkitSource.copySizeTo(renderer.domElement) 
+    arToolkitSource.copyElementSizeTo(renderer.domElement) 
     if( arToolkitContext.arController !== null ){
-      arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)  
+      arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)  
     } 
   }
   ////////////////////////////////////////////////////////////////////////////////

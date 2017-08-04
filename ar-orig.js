@@ -998,30 +998,16 @@ var Qb=[Ik,Zh,_h,Qj,Qi,Pi,Ri,Ag,sg,qg,rg,yg,kh,jh,Oi,Mj];var Rb=[Jk,ki,ji,gi];va
       image = this.image;
     }
 
-    // HACK(keanulee): Draw image in the middle of the square canvas.
-    if( image.nodeName === "IMG" ){
-      var sourceWidth = image.naturalWidth
-      var sourceHeight = image.naturalHeight
-    }else if( image.nodeName === "VIDEO" ){
-      var sourceWidth = image.videoWidth
-      var sourceHeight = image.videoHeight
-    }else{
-      console.assert(false)
-    }
 
     if (this.orientation === 'portrait') {
       this.ctx.save();
       this.ctx.translate(this.canvas.width, 0);
       this.ctx.rotate(Math.PI/2);
-      // this.ctx.drawImage(image, 0, 0, this.canvas.height, this.canvas.width); // draw video
-      this.ctx.drawImage(image, (this.canvas.height-sourceHeight)/2, (this.canvas.width-sourceWidth)/2, sourceHeight, sourceWidth); // draw video
+      this.ctx.drawImage(image, 0, 0, this.canvas.height, this.canvas.width); // draw video
       this.ctx.restore();
     } else {
-      // this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height); // draw video
-      this.ctx.drawImage(image, (this.canvas.width-sourceWidth)/2, (this.canvas.height-sourceHeight)/2, sourceWidth, sourceHeight); // draw video
+      this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height); // draw video
     }
-    // debugger
-    // img.src = this.canvas.toDataURL();
 
     var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     var data = imageData.data;
@@ -5335,10 +5321,7 @@ ARjs.Context.prototype._initArtoolkit = function(onCompleted){
   // get cameraParameters
         var cameraParameters = new ARCameraParam(_this.parameters.cameraParametersUrl, function(){
           // init controller
-                // HACK(keanulee): Use a square canvas to accomodate both portrait and landscape.
-                var canvasSize = Math.max(_this.parameters.canvasWidth, _this.parameters.canvasHeight);
-                var arController = new ARController(canvasSize, canvasSize, cameraParameters);
-                // var arController = new ARController(_this.parameters.canvasWidth, _this.parameters.canvasHeight, cameraParameters);
+                var arController = new ARController(_this.parameters.canvasWidth, _this.parameters.canvasHeight, cameraParameters);
                 _this.arController = arController
                 
     // honor this.parameters.imageSmoothingEnabled
@@ -5931,19 +5914,16 @@ ARjs.Source.prototype._initSourceWebcam = function(onReady, onError) {
       audio: false,
       video: {
         facingMode: 'environment',
-        // NOTE(keanulee): getUserMedia will flip width/height constraints on portrait devices,
-        // so we can't rely on it giving us the right source. We will accept either orientation
-        // and paint it on a square canvas.
-        // width: {
-        //   ideal: _this.parameters.sourceWidth,
-        //   // min: 1024,
-        //   // max: 1920
-        // },
-        // height: {
-        //   ideal: _this.parameters.sourceHeight,
-        //   // min: 776,
-        //   // max: 1080
-        // }
+        width: {
+          ideal: _this.parameters.sourceWidth,
+          // min: 1024,
+          // max: 1920
+        },
+        height: {
+          ideal: _this.parameters.sourceHeight,
+          // min: 776,
+          // max: 1080
+        }
         }
                 }
     // get a device which satisfy the constraints
@@ -6044,20 +6024,19 @@ ARjs.Source.prototype.onResizeElement = function(mirrorDomElements){
   var screenWidth = window.innerWidth
   var screenHeight = window.innerHeight
 
-  // HACK(keanulee): The source canvas is always a square.
   // compute sourceWidth, sourceHeight
-  // if( this.domElement.nodeName === "IMG" ){
-  //   var sourceWidth = this.domElement.naturalWidth
-  //   var sourceHeight = this.domElement.naturalHeight
-  // }else if( this.domElement.nodeName === "VIDEO" ){
-  //   var sourceWidth = this.domElement.videoWidth
-  //   var sourceHeight = this.domElement.videoHeight
-  // }else{
-  //   console.assert(false)
-  // }
+  if( this.domElement.nodeName === "IMG" ){
+    var sourceWidth = this.domElement.naturalWidth
+    var sourceHeight = this.domElement.naturalHeight
+  }else if( this.domElement.nodeName === "VIDEO" ){
+    var sourceWidth = this.domElement.videoWidth
+    var sourceHeight = this.domElement.videoHeight
+  }else{
+    console.assert(false)
+  }
   
   // compute sourceAspect
-  var sourceAspect = 1//sourceWidth / sourceHeight
+  var sourceAspect = sourceWidth / sourceHeight
   // compute screenAspect
   var screenAspect = screenWidth / screenHeight
 
