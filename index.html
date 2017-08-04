@@ -15,11 +15,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
   <title>AR Logo</title>
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="AR Logo">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="AR Logo">
   <meta name="theme-color" content="#000000">
 
   <script src="lib/three.js/three.min.js"></script>
@@ -30,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   body {
     margin: 0;
     position: fixed;
+    background: #000;
     overflow: hidden;
   }
   </style>
@@ -133,7 +129,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // init controls for camera
   var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
     type : 'pattern',
-    patternUrl : 'lib/AR.js/data/patt.hiro',
+    patternUrl : 'marker/pattern-marker.patt',
+    // patternUrl : 'lib/AR.js/data/patt.hiro',
     // patternUrl : 'lib/AR.js/data/patt.kanji',
     // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
     changeMatrixMode: 'cameraTransformMatrix'
