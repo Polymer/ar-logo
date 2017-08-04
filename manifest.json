@@ -1,0 +1,21 @@
+{
+  "name": "AR Logo",
+  "short_name": "AR Logo",
+  "icons": [{
+    "src": "images/icon-32.png",
+    "type": "image/png",
+    "sizes": "32x32"
+  }, {
+    "src": "images/icon-192.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  }, {
+    "src": "images/icon-512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }],
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}
