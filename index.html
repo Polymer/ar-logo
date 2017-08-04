@@ -1,15 +1,45 @@
-<!DOCTYPE html>
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-<!-- three.js library -->
-<script src="https://threejs.org/build/three.js"></script>
-<script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
-<!-- ar.js -->
-<script src="ar.js"></script>
-<script>THREEx.ArToolkitContext.baseURL = 'https://jeromeetienne.github.io/AR.js/three.js/'</script>
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html lang="en">
 
-<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
-  <!-- <img id="img" style="width:100vw; position:fixed; top:0; left:0; z-index:5; opacity:0.5"> -->
-<script>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>AR Logo</title>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="AR Logo">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="AR Logo">
+  <meta name="theme-color" content="#000000">
+
+  <script src="lib/three.js/three.min.js"></script>
+  <script src="lib/three.js/OBJLoader.js"></script>
+  <script src="lib/AR.js/ar.js"></script>
+
+  <style>
+  body {
+    margin: 0;
+    position: fixed;
+    overflow: hidden;
+  }
+  </style>
+</head>
+
+<body>
+  <script>
+  /**
+   * Based on example code by Jerome Etienne (https://github.com/jeromeetienne/AR.js).
+   */
   //////////////////////////////////////////////////////////////////////////////////
   //    Init
   //////////////////////////////////////////////////////////////////////////////////
@@ -52,16 +82,7 @@
     sourceHeight: 640,
     // resolution displayed for the source 
     displayWidth: 640,
-    displayHeight: 640,
-    
-    // // to read from an image
-    // sourceType : 'image',
-    // sourceUrl : 'sample-wide.jpg',  
-    // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',    
-
-    // to read from a video
-    // sourceType : 'video',
-    // sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',   
+    displayHeight: 640
   })
 
   arToolkitSource.init(function onReady(){
@@ -73,7 +94,7 @@
     onResize()
   })
   function onResize(){
-    arToolkitSource.onResize()  
+    arToolkitSource.onResizeElement()  
     arToolkitSource.copyElementSizeTo(renderer.domElement) 
     if( arToolkitContext.arController !== null ){
       arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)  
@@ -86,7 +107,7 @@
 
   // create atToolkitContext
   var arToolkitContext = new THREEx.ArToolkitContext({
-    cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
+    cameraParametersUrl: 'lib/AR.js/data/camera_para.dat',
     detectionMode: 'mono',
   })
   // initialize it
@@ -112,8 +133,8 @@
   // init controls for camera
   var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
     type : 'pattern',
-    patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro',
-    // patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji',
+    patternUrl : 'lib/AR.js/data/patt.hiro',
+    // patternUrl : 'lib/AR.js/data/patt.kanji',
     // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
     changeMatrixMode: 'cameraTransformMatrix'
   })
@@ -124,48 +145,26 @@
   //    add an object in the scene
   //////////////////////////////////////////////////////////////////////////////////
 
-  // add a torus knot 
-  // var geometry  = new THREE.CubeGeometry(1,1,1);
   var material  = new THREE.MeshNormalMaterial({
     transparent : true,
     opacity: 0.5,
     side: THREE.DoubleSide
-  }); 
-  // var mesh  = new THREE.Mesh( geometry, material );
-  // // mesh.position.y = geometry.parameters.height/2
-  // mesh.scale.y = 0.75;
-  // scene.add( mesh );
-  
-  // var geometry  = new THREE.TorusKnotGeometry(0.3,0.1,64,16);
-  // var material  = new THREE.MeshNormalMaterial(); 
-  // var mesh  = new THREE.Mesh( geometry, material );
-  // // mesh.position.y = 0.5
-  // mesh.scale.y = 0.75;
-  // scene.add( mesh );
-  
-  // onRenderFcts.push(function(delta){
-  //   mesh.rotation.x += Math.PI*delta
-  // })
+  });
 
   var loader = new THREE.OBJLoader(); 
-  loader.load(
-
-   'models/p-logo.obj',
-
-   function ( object ) {
+  loader.load('models/p-logo.obj', function ( object ) {
     object.traverse( function ( child ) {
-
-        if ( child instanceof THREE.Mesh ) {
-
-            child.material = material;
-
-        }
-
+      if ( child instanceof THREE.Mesh ) {
+        child.material = material;
+      }
     } );
-      // mesh.position.y = geometry.parameters.height/2
-      object.scale.y = 0.75;
-      scene.add( object );
-   });
+
+    // HACK(keanulee): AR.js assumes video source is 4:3, but we use a square canvas instead
+    // to handle portrait and landscape. This vertical scale accounts for that.
+    object.scale.y = 0.75;
+
+    scene.add( object );
+  });
 
   //////////////////////////////////////////////////////////////////////////////////
   //    render the whole thing on the page
@@ -177,17 +176,14 @@
   })
 
   // run the rendering loop
-  var lastTimeMsec= null
-  requestAnimationFrame(function animate(nowMsec){
+  requestAnimationFrame(function animate(){
     // keep looping
     requestAnimationFrame( animate );
-    // measure time
-    lastTimeMsec  = lastTimeMsec || nowMsec-1000/60
-    var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
-    lastTimeMsec  = nowMsec
     // call each update function
     onRenderFcts.forEach(function(onRenderFct){
-      onRenderFct(deltaMsec/1000, nowMsec/1000)
+      onRenderFct()
     })
   })
-</script></body>
+  </script>
+</body>
+</html>
