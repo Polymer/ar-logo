@@ -4,7 +4,7 @@
 <script src="https://threejs.org/build/three.js"></script>
 <script src="https://threejs.org/examples/js/loaders/OBJLoader.js"></script>
 <!-- ar.js -->
-<script src="https://jeromeetienne.github.io/AR.js/three.js/build/ar.js"></script>
+<script src="ar.js"></script>
 <script>THREEx.ArToolkitContext.baseURL = 'https://jeromeetienne.github.io/AR.js/three.js/'</script>
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
@@ -19,7 +19,7 @@
     alpha: true
   });
   renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-  renderer.setSize( 640, 480 );
+  renderer.setSize( 480, 480 );
   renderer.domElement.style.position = 'absolute'
   renderer.domElement.style.top = '0px'
   renderer.domElement.style.left = '0px'
@@ -47,11 +47,11 @@
     // to read from the webcam 
     sourceType : 'webcam',
     // resolution of at which we initialize in the source image
-    sourceWidth: 480,
-    sourceHeight: 480,
+    // sourceWidth: 480,
+    // sourceHeight: 480,
     // resolution displayed for the source 
-    displayWidth: 480,
-    displayHeight: 480,
+    // displayWidth: 480,
+    // displayHeight: 480,
     
     // // to read from an image
     // sourceType : 'image',
