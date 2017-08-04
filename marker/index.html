@@ -1,0 +1,66 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>AR Logo</title>
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="manifest" href="../manifest.json">
+
+  <style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 24px;
+    line-height: 2;
+  }
+
+  #markerInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .marker-img-container img {
+    max-width: 100%;
+  }
+
+  a {
+    color: #0366d6;
+  }
+  </style>
+</head>
+
+<body>
+  <main id="markerInfo">
+    <div class="marker-img-container">
+      <img src="pattern-marker.png" alt="marker">
+    </div>
+    <ol>
+      <li>Go to <a href="../">https://polymer.github.io/ar-logo/</a> on your device.</li>
+      <li>Place the above marker on a flat surface.</li>
+      <li>Point your device at the marker.</li>
+    </ol>
+  </main>
+
+  <script>
+  if ('serviceWorker' in window.navigator) {
+    window.addEventListener('load', function() {
+      window.navigator.serviceWorker.register('../sw.js')
+    });
+  }
+  </script>
+</body>
+</html>
