@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 24px;
     line-height: 2;
+    margin: 0;
   }
 
   #markerInfo {
@@ -33,23 +34,88 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     justify-content: center;
   }
 
-  .marker-img-container img {
+  /*.marker-img-container img {
     max-width: 100%;
+  }*/
+
+  .marker-container {
+    position: relative;
+    width: 512px;
+    height: 512px;
+    max-width: 100vw;
+    max-height: 100vw;
+    margin: 0 auto 20px;
+  }
+
+  .marker-border {
+    display: inline-block;
+    margin: 10%;
+    width: 80%;
+    height: 80%;
+    background: #000;
+  }
+
+  .marker-inner {
+    display: inline-block;
+    margin: 25%;
+    width: 50%;
+    height: 50%;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 31% 2% 0 26%;
   }
 
   a {
     color: #0366d6;
+    text-decoration: none;
   }
   </style>
 </head>
 
 <body>
   <main id="markerInfo">
-    <div class="marker-img-container">
+    <!-- <div class="marker-img-container">
       <img src="pattern-marker.png" alt="marker">
+    </div> -->
+    <div class="marker-container">
+      <div class="marker-border">
+        <div class="marker-inner">
+          <svg viewBox="0 0 230 160">
+            <g>
+              <polygon class="st0" points="93.1,4.3 49.4,4.3 5.7,80 49.4,155.7 93.1,155.7 158.7,42.1 180.6,80 136.9,155.7 180.6,155.7 
+                224.3,80 180.6,4.3 136.9,4.3 71.3,117.9 49.4,80   "/>
+              <polygon class="st1" points="115,42.1 136.8,4.3 158.7,42.1  "/>
+              <polygon class="st2" points="115,42.1 136.8,80 158.7,42.1   "/>
+              <polygon class="st3" points="93.1,80 115,42.1 136.8,80  "/>
+              <polygon class="st4" points="49.4,4.3 71.3,42.1 93.1,4.3  "/>
+              <polygon class="st5" points="27.6,42.1 49.4,4.3 71.3,42.1   "/>
+              <polygon class="st6" points="27.6,42.1 49.4,80 71.3,42.1  "/>
+              <polygon class="st7" points="5.7,80 27.6,42.1 49.4,80   "/>
+              <polygon class="st8" points="93.1,80 115,117.9 136.8,80   "/>
+              <polygon class="st2" points="71.3,117.9 93.1,80 115,117.9   "/>
+              <polygon class="st1" points="71.3,117.9 93.1,155.7 115,117.9  "/>
+              <polygon class="st9" points="49.4,155.7 71.3,117.9 93.1,155.7   "/>
+              <polygon class="st10" points="5.7,80 27.6,117.9 49.4,80   "/>
+              <polygon class="st4" points="180.6,155.7 158.7,117.9 136.9,155.7  "/>
+              <polygon class="st5" points="202.4,117.9 180.6,155.7 158.7,117.9  "/>
+              <polygon class="st6" points="202.4,117.9 180.6,80 158.7,117.9   "/>
+              <polygon class="st7" points="224.3,80 202.4,117.9 180.6,80  "/>
+              <polygon class="st10" points="224.3,80 202.4,42.1 180.6,80  "/>
+              <polygon class="st11" points="71.3,117.9 49.4,80 27.6,117.9   "/>
+              <polygon class="st12" points="71.3,117.9 49.4,155.7 27.6,117.9  "/>
+              <polygon class="st9" points="136.8,4.3 158.7,42.1 180.6,4.3   "/>
+              <polygon class="st12" points="202.4,42.1 180.6,4.3 158.7,42.1   "/>
+              <polygon class="st11" points="202.4,42.1 180.6,80 158.7,42.1  "/>
+            </g>
+          </svg>
+        </div>
+      </div>
     </div>
     <ol>
-      <li>Go to <a href="../">https://polymer.github.io/ar-logo/</a> on your device.</li>
+      <li>
+        Go to <a href="../">https://polymer.github.io/ar-logo/</a><br>
+        on your device.
+      </li>
       <li>Place the above marker on a flat surface.</li>
       <li>Point your device at the marker.</li>
     </ol>
