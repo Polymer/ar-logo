@@ -67,170 +67,191 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transform: rotateX(60deg);
     opacity: 0.5;
   }
+
+  .help-link {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 24px;
+    line-height: 24px;
+    background: #666;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    opacity: 0.8;
+    z-index: 2;
+  }
   </style>
 </head>
 
 <body>
   <main id="markerInfo">
     <div class="marker-img-container">
-      <a href="marker/">
-        <img src="marker/pattern-marker.png" alt="marker">
-      </a>
+      <img src="marker/pattern-marker.png" alt="marker">
     </div>
     <p>Marker not detected</p>
   </main>
 
+  <a class="help-link" href="marker/">?</a>
+
   <script>
-  /**
-   * Based on example code by Jerome Etienne (https://github.com/jeromeetienne/AR.js).
-   */
-  //////////////////////////////////////////////////////////////////////////////////
-  //    Init
-  //////////////////////////////////////////////////////////////////////////////////
-
-  // init renderer
-  var renderer  = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true
-  });
-  renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-  renderer.setSize( 640, 640 );
-  renderer.domElement.style.position = 'absolute'
-  renderer.domElement.style.top = '0px'
-  renderer.domElement.style.left = '0px'
-  document.body.appendChild( renderer.domElement );
-
-  // array of functions for the rendering loop
-  var onRenderFcts= [];
-
-  // init scene and camera
-  var scene = new THREE.Scene();
+  try {
+    /**
+     * Based on example code by Jerome Etienne (https://github.com/jeromeetienne/AR.js).
+     */
     
-  //////////////////////////////////////////////////////////////////////////////////
-  //    Initialize a basic camera
-  //////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////
+    //    Init
+    //////////////////////////////////////////////////////////////////////////////////
 
-  // Create a camera
-  var camera = new THREE.Camera();
-  scene.add(camera);
+    // init renderer
+    var renderer  = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true
+    });
+    renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+    renderer.setSize( 640, 640 );
+    renderer.domElement.style.position = 'absolute'
+    renderer.domElement.style.top = '0px'
+    renderer.domElement.style.left = '0px'
+    document.body.appendChild( renderer.domElement );
 
-  ////////////////////////////////////////////////////////////////////////////////
-  //          handle arToolkitSource
-  ////////////////////////////////////////////////////////////////////////////////
+    // array of functions for the rendering loop
+    var onRenderFcts= [];
 
-  var arToolkitSource = new THREEx.ArToolkitSource({
-    // to read from the webcam 
-    sourceType : 'webcam',
-    // resolution of at which we initialize in the source image
-    sourceWidth: 640,
-    sourceHeight: 640,
-    // resolution displayed for the source 
-    displayWidth: 640,
-    displayHeight: 640
-  })
+    // init scene and camera
+    var scene = new THREE.Scene();
+      
+    //////////////////////////////////////////////////////////////////////////////////
+    //    Initialize a basic camera
+    //////////////////////////////////////////////////////////////////////////////////
 
-  arToolkitSource.init(function onReady(){
-    onResize()
-  })
-  
-  // handle resize
-  window.addEventListener('resize', function(){
-    onResize()
-  })
-  function onResize(){
-    arToolkitSource.onResizeElement()  
-    arToolkitSource.copyElementSizeTo(renderer.domElement) 
-    if( arToolkitContext.arController !== null ){
-      arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)  
-    } 
-  }
-  ////////////////////////////////////////////////////////////////////////////////
-  //          initialize arToolkitContext
-  ////////////////////////////////////////////////////////////////////////////////
-  
+    // Create a camera
+    var camera = new THREE.Camera();
+    scene.add(camera);
 
-  // create atToolkitContext
-  var arToolkitContext = new THREEx.ArToolkitContext({
-    cameraParametersUrl: 'lib/AR.js/data/camera_para.dat',
-    detectionMode: 'mono',
-  })
-  // initialize it
-  arToolkitContext.init(function onCompleted(){
-    // copy projection matrix to camera
-    camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
-  })
+    ////////////////////////////////////////////////////////////////////////////////
+    //          handle arToolkitSource
+    ////////////////////////////////////////////////////////////////////////////////
 
-  // update artoolkit on every frame
-  onRenderFcts.push(function(){
-    if( arToolkitSource.ready === false ) return
-
-    arToolkitContext.update( arToolkitSource.domElement )
-    
-    // update scene.visible if the marker is seen
-    scene.visible = camera.visible
-
-    markerInfo.classList.toggle('hidden', camera.visible)
-  })
-    
-  ////////////////////////////////////////////////////////////////////////////////
-  //          Create a ArMarkerControls
-  ////////////////////////////////////////////////////////////////////////////////
-  
-  // init controls for camera
-  var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
-    type : 'pattern',
-    patternUrl : 'marker/pattern-marker.patt',
-    // patternUrl : 'lib/AR.js/data/patt.hiro',
-    // patternUrl : 'lib/AR.js/data/patt.kanji',
-    // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
-    changeMatrixMode: 'cameraTransformMatrix'
-  })
-  // as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
-  scene.visible = false
-
-  //////////////////////////////////////////////////////////////////////////////////
-  //    add an object in the scene
-  //////////////////////////////////////////////////////////////////////////////////
-
-  var material  = new THREE.MeshNormalMaterial({
-    transparent : true,
-    opacity: 0.8,
-    side: THREE.DoubleSide
-  });
-
-  var loader = new THREE.OBJLoader(); 
-  loader.load('models/p-logo.obj', function ( object ) {
-    object.traverse( function ( child ) {
-      if ( child instanceof THREE.Mesh ) {
-        child.material = material;
-      }
-    } );
-
-    // HACK(keanulee): AR.js assumes video source is 4:3, but we use a square canvas instead
-    // to handle portrait and landscape. This vertical scale accounts for that.
-    object.scale.y = 0.75;
-
-    scene.add( object );
-  });
-
-  //////////////////////////////////////////////////////////////////////////////////
-  //    render the whole thing on the page
-  //////////////////////////////////////////////////////////////////////////////////
-
-  // render the scene
-  onRenderFcts.push(function(){
-    renderer.render( scene, camera );
-  });
-
-  // run the rendering loop
-  requestAnimationFrame(function animate(){
-    // keep looping
-    requestAnimationFrame( animate );
-    // call each update function
-    onRenderFcts.forEach(function(onRenderFct){
-      onRenderFct()
+    var arToolkitSource = new THREEx.ArToolkitSource({
+      // to read from the webcam 
+      sourceType : 'webcam',
+      // resolution of at which we initialize in the source image
+      sourceWidth: 640,
+      sourceHeight: 640,
+      // resolution displayed for the source 
+      displayWidth: 640,
+      displayHeight: 640
     })
-  });
+
+    arToolkitSource.init(function onReady(){
+      onResize()
+    }, function onError() {
+      window.alert('MediaDevices.getUserMedia() is not supported on your browser. Try this with Chrome for Android or Safari on iOS 11.');
+    })
+    
+    // handle resize
+    window.addEventListener('resize', function(){
+      onResize()
+    })
+    function onResize(){
+      arToolkitSource.onResizeElement()  
+      arToolkitSource.copyElementSizeTo(renderer.domElement) 
+      if( arToolkitContext.arController !== null ){
+        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)  
+      } 
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+    //          initialize arToolkitContext
+    ////////////////////////////////////////////////////////////////////////////////
+    
+
+    // create atToolkitContext
+    var arToolkitContext = new THREEx.ArToolkitContext({
+      cameraParametersUrl: 'lib/AR.js/data/camera_para.dat',
+      detectionMode: 'mono',
+    })
+    // initialize it
+    arToolkitContext.init(function onCompleted(){
+      // copy projection matrix to camera
+      camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+    })
+
+    // update artoolkit on every frame
+    onRenderFcts.push(function(){
+      if( arToolkitSource.ready === false ) return
+
+      arToolkitContext.update( arToolkitSource.domElement )
+      
+      // update scene.visible if the marker is seen
+      scene.visible = camera.visible
+
+      markerInfo.classList.toggle('hidden', camera.visible)
+    })
+      
+    ////////////////////////////////////////////////////////////////////////////////
+    //          Create a ArMarkerControls
+    ////////////////////////////////////////////////////////////////////////////////
+    
+    // init controls for camera
+    var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+      type : 'pattern',
+      patternUrl : 'marker/pattern-marker.patt',
+      // patternUrl : 'lib/AR.js/data/patt.hiro',
+      // patternUrl : 'lib/AR.js/data/patt.kanji',
+      // as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
+      changeMatrixMode: 'cameraTransformMatrix'
+    })
+    // as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
+    scene.visible = false
+
+    //////////////////////////////////////////////////////////////////////////////////
+    //    add an object in the scene
+    //////////////////////////////////////////////////////////////////////////////////
+
+    var material  = new THREE.MeshNormalMaterial({
+      transparent : true,
+      opacity: 0.8,
+      side: THREE.DoubleSide
+    });
+
+    var loader = new THREE.OBJLoader(); 
+    loader.load('models/p-logo.obj', function ( object ) {
+      object.traverse( function ( child ) {
+        if ( child instanceof THREE.Mesh ) {
+          child.material = material;
+        }
+      } );
+
+      // HACK(keanulee): AR.js assumes video source is 4:3, but we use a square canvas instead
+      // to handle portrait and landscape. This vertical scale accounts for that.
+      object.scale.y = 0.75;
+
+      scene.add( object );
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////
+    //    render the whole thing on the page
+    //////////////////////////////////////////////////////////////////////////////////
+
+    // render the scene
+    onRenderFcts.push(function(){
+      renderer.render( scene, camera );
+    });
+
+    // run the rendering loop
+    requestAnimationFrame(function animate(){
+      // keep looping
+      requestAnimationFrame( animate );
+      // call each update function
+      onRenderFcts.forEach(function(onRenderFct){
+        onRenderFct()
+      })
+    });
+  } catch (e) {}
 
   // Google Analytics
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
