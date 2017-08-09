@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     margin: 0;
   }
 
-  #markerInfo {
+  main {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,7 +58,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     height: 50%;
     background: #fff;
     box-sizing: border-box;
-    padding: 31% 2% 0 26%;
+  }
+
+  #logo {
+    width: 44%;
+    transform: translate3d(119%, 203%, 0);
   }
 
   a {
@@ -75,9 +79,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <body>
   <div class="marker-container">
-    <div class="marker-border">
+    <div id="trigger" class="marker-border">
       <div class="marker-inner">
-        <svg viewBox="0 0 230 160">
+        <svg id="logo" viewBox="0 0 230 160">
           <g>
             <polygon class="st0" points="93.1,4.3 49.4,4.3 5.7,80 49.4,155.7 93.1,155.7 158.7,42.1 180.6,80 136.9,155.7 180.6,155.7 
               224.3,80 180.6,4.3 136.9,4.3 71.3,117.9 49.4,80   "/>
@@ -109,7 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
   </div>
 
-  <main id="markerInfo"> 
+  <main> 
     <ol>
       <li>
         Go to <a href="../">https://polymer.github.io/ar-logo/</a><br>
@@ -130,6 +134,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </main> 
 
   <script>
+  // Easter egg
+  var clicksLeft = 5,
+      rafId;
+  trigger.addEventListener('click', function() {
+    if (--clicksLeft) {
+      cancelAnimationFrame(rafId);
+      logo.style.transform = '';
+      logo.style.fill = '';
+    } else {
+      clicksLeft = 5;
+      var x = 119,
+          y = 203,
+          dx = Math.random(),
+          dy = Math.random(),
+          minX = -2,
+          minY = -2,
+          maxX = 130,
+          maxY = 230;
+      function changeColor() {
+        var r = Math.round(Math.random() * 255),
+            g = Math.round(Math.random() * 255),
+            b = Math.round(Math.random() * 255);
+        logo.style.fill = 'rgb('+r+','+g+','+b+')';
+      }
+      rafId = requestAnimationFrame(function tick() {
+        x += dx;
+        if (x > maxX || x < minX) {
+          dx *= -1;
+          x += 2 * dx;
+          changeColor();
+        }
+
+        y += dy;
+        if (y > maxY || y < minY) {
+          dy *= -1;
+          y += 2 * dy;
+          changeColor();
+        }
+
+        logo.style.transform = 'translate3d('+x+'%,'+y+'%,0)';
+        rafId = requestAnimationFrame(tick);
+      });
+    }
+  });
+
   // Google Analytics
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
