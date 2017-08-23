@@ -20,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="manifest" href="manifest.json">
 
   <script src="lib/three.js/three.min.js"></script>
-  <script src="lib/three.js/OBJLoader.js"></script>
+  <script src="lib/three.js/GLTFLoader.js"></script>
   <script src="lib/AR.js/ar.js"></script>
 
   <style>
@@ -101,7 +101,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /**
      * Based on example code by Jerome Etienne (https://github.com/jeromeetienne/AR.js).
      */
-    
+
     //////////////////////////////////////////////////////////////////////////////////
     //    Init
     //////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // init scene and camera
     var scene = new THREE.Scene();
-      
+
     //////////////////////////////////////////////////////////////////////////////////
     //    Initialize a basic camera
     //////////////////////////////////////////////////////////////////////////////////
@@ -133,16 +133,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     scene.add(camera);
 
     ////////////////////////////////////////////////////////////////////////////////
+    //          create default lighting
+    ////////////////////////////////////////////////////////////////////////////////
+
+    scene.add(new THREE.AmbientLight(0xffffff))
+    scene.add(new THREE.PointLight(0xffffff))
+
+    ////////////////////////////////////////////////////////////////////////////////
     //          handle arToolkitSource
     ////////////////////////////////////////////////////////////////////////////////
 
     var arToolkitSource = new THREEx.ArToolkitSource({
-      // to read from the webcam 
+      // to read from the webcam
       sourceType : 'webcam',
       // resolution of at which we initialize in the source image
       sourceWidth: 640,
       sourceHeight: 640,
-      // resolution displayed for the source 
+      // resolution displayed for the source
       displayWidth: 640,
       displayHeight: 640
     })
@@ -152,22 +159,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }, function onError() {
       window.alert('MediaDevices.getUserMedia() is not supported on your browser. Try this with Chrome for Android or Safari on iOS 11.');
     })
-    
+
     // handle resize
     window.addEventListener('resize', function(){
       onResize()
     })
     function onResize(){
-      arToolkitSource.onResizeElement()  
-      arToolkitSource.copyElementSizeTo(renderer.domElement) 
+      arToolkitSource.onResizeElement()
+      arToolkitSource.copyElementSizeTo(renderer.domElement)
       if( arToolkitContext.arController !== null ){
-        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)  
-      } 
+        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
+      }
     }
     ////////////////////////////////////////////////////////////////////////////////
     //          initialize arToolkitContext
     ////////////////////////////////////////////////////////////////////////////////
-    
+
 
     // create atToolkitContext
     var arToolkitContext = new THREEx.ArToolkitContext({
@@ -185,17 +192,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if( arToolkitSource.ready === false ) return
 
       arToolkitContext.update( arToolkitSource.domElement )
-      
+
       // update scene.visible if the marker is seen
       scene.visible = camera.visible
 
       markerInfo.classList.toggle('hidden', camera.visible)
     })
-      
+
     ////////////////////////////////////////////////////////////////////////////////
     //          Create a ArMarkerControls
     ////////////////////////////////////////////////////////////////////////////////
-    
+
     // init controls for camera
     var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
       type : 'pattern',
@@ -212,25 +219,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     //    add an object in the scene
     //////////////////////////////////////////////////////////////////////////////////
 
-    var material  = new THREE.MeshNormalMaterial({
-      transparent : true,
-      opacity: 0.8,
-      side: THREE.DoubleSide
-    });
-
-    var loader = new THREE.OBJLoader(); 
-    loader.load('models/p-logo.obj', function ( object ) {
-      object.traverse( function ( child ) {
-        if ( child instanceof THREE.Mesh ) {
-          child.material = material;
-        }
-      } );
-
+    var loader = new THREE.GLTFLoader();
+    loader.load('models/logo.gltf', function ( object ) {
       // HACK(keanulee): AR.js assumes video source is 4:3, but we use a square canvas instead
       // to handle portrait and landscape. This vertical scale accounts for that.
-      object.scale.y = 0.75;
+      object.scene.scale.set(0.25, 0.25 * 0.75, 0.25);
 
-      scene.add( object );
+      scene.add( object.scene );
     });
 
     //////////////////////////////////////////////////////////////////////////////////
