@@ -221,11 +221,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     var loader = new THREE.GLTFLoader();
     loader.load('models/logo.gltf', function ( object ) {
+      var logo = object.scene
       // HACK(keanulee): AR.js assumes video source is 4:3, but we use a square canvas instead
       // to handle portrait and landscape. This vertical scale accounts for that.
-      object.scene.scale.set(0.25, 0.25 * 0.75, 0.25);
+      logo.scale.set(0.25, 0.25 * 0.75, 0.25);
+      logo.position.y = 0.5
+      logo.position.z = -0.5
+      onRenderFcts.push(function(){
+        logo.rotation.y += Math.PI / 200
+      })
 
-      scene.add( object.scene );
+      scene.add( logo );
     });
 
     //////////////////////////////////////////////////////////////////////////////////
